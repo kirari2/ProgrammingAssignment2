@@ -1,5 +1,4 @@
 # Programming Assignment 2
-
 # Reference: https://github.com/lgreski/datasciencectacontent/blob/master/markdown/rprog-breakingDownMakeVector.md
 
 makeVector <- function(x = numeric()) {
@@ -31,8 +30,18 @@ cachemean <- function(x, ...) {
 # makeCacheMatrix: This function creates a special "matrix" object that can 
 # cache its inverse.
 
-makeCacheMatrix <- function(x) {
-    
+makeCacheMatrix <- function(x = matrix()) {
+    i <- NULL
+    set <- function(y) {
+        x <<- y
+        i <<- NULL
+    }
+    get <- function() x
+    setinv <- function(inverse) i <<- inverse
+    getinv <- function() i
+    list(set = set, get = get,
+         setinv = setinv,
+         getinv = getinv)
 }
 
 # cacheSolve: This function computes the inverse of the special "matrix" 
@@ -40,6 +49,14 @@ makeCacheMatrix <- function(x) {
 # (and the matrix has not changed), then cacheSolve should retrieve the inverse 
 # from the cache.
 
-cacheSolve <- function() {
-    
+cacheSolve <- function(x, ...) {
+    i <- x$getinv()
+    if(!is.null(i)) {
+        message("getting cached data")
+        return(i)
+    }
+    data <- x$get()
+    i <- solve(data, ...)
+    x$setinv(i)
+    i    
 }
